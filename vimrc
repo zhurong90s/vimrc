@@ -15,7 +15,7 @@ set showcmd         " 输入的命令显示出来，看的清楚些
 "set whichwrap+=<,>,h,l   " 允许backspace和光标键跨越行边界(不建议)  
 "set scrolloff=3     " 光标移动到buffer的顶部和底部时保持3行距离  
 set novisualbell    " 不要闪烁(不明白)  
-set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}   "状态行显示的内容  
+set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %l:%M\ %p\")}   "状态行显示的内容  
 set laststatus=1    " 启动显示状态行(1),总是显示状态行(2)  
 set foldenable      " 允许折叠  
 set foldmethod=manual   " 手动折叠  
@@ -38,22 +38,26 @@ endif
 "  1  
 "endfunction  
 "nmap F :call Mydict()<CR> 
+
 function! LoadHeadPath()
-set path=.,
-let s:lines = system("find `pwd` -type d -name 'include'|sort |uniq|sed 's%include$%include,%'")
-let s:lines = split(s:lines, '\n')
-for s:line in s:lines
-  let &path = &path . s:line
-  let &path = &path . ','
-endfor
-let s:lines = system("find `pwd` -type f -name '*.h'|sed 's!/[^/]*\.h$!,!'|sort|uniq")
-let s:lines = split(s:lines, '\n')
-for s:line in s:lines
-  let &path = &path . s:line
-  let &path = &path . ','
-endfor
+    set path=.,
+    let s:lines = system("find `pwd` -type d -name 'include'|sort |uniq|sed 's%include$%include,%'")
+    let s:lines = split(s:lines, '\n')
+    for s:line in s:lines
+      let &path = &path . s:line
+      let &path = &path . ','
+    endfor
+    let s:lines = system("find `pwd` -type f -name '*.h'|sed 's!/[^/]*\.h$!,!'|sort|uniq")
+    let s:lines = split(s:lines, '\n')
+    for s:line in s:lines
+      let &path = &path . s:line
+      let &path = &path . ','
+    endfor
 endfunction
-nmap L :call LoadHeadPath()<CR> 
+nmap L :call LoadHeadPath()<CR>
+
+map <C-n> :set relativenumber <CR>
+map <C-m> :set norelativenumber <CR>
 "colorscheme murphy
 "字体 
 "if (has("gui_running")) 
@@ -74,7 +78,7 @@ func SetTitle()
         call setline(1,"\#########################################################################") 
         call append(line("."), "\# File Name: ".expand("%")) 
         call append(line(".")+1, "\# Author: zhudongjie") 
-        call append(line(".")+2, "\# mail: zhudongjie@pinecone.net") 
+        call append(line(".")+2, "\# mail: zhudongjie@fishsemi.com") 
         call append(line(".")+3, "\# Created Time: ".strftime("%c")) 
         call append(line(".")+4, "\#########################################################################") 
         call append(line(".")+5, "\#!/bin/bash") 
@@ -83,7 +87,7 @@ func SetTitle()
         call setline(1, "/*************************************************************************") 
         call append(line("."), "    > File Name: ".expand("%")) 
         call append(line(".")+1, "    > Author: zhudongjie") 
-        call append(line(".")+2, "    > Mail: zhudongjie@pinecone.net ") 
+        call append(line(".")+2, "    > Mail: zhudongjie@fishsemi.com") 
         call append(line(".")+3, "    > Created Time: ".strftime("%c")) 
         call append(line(".")+4, " ************************************************************************/") 
         call append(line(".")+5, "")
@@ -187,9 +191,9 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 " 不要用空格代替制表符
-set noexpandtab
+"set noexpandtab
 " 用空格代替制表符
-"set expandtab
+set expandtab
 " 在行和段开始处使用制表符
 "set smarttab
 " 显示行号
@@ -213,7 +217,7 @@ set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
 set langmenu=zh_CN.UTF-8
 set helplang=cn
 " 我的状态行显示的内容（包括文件类型和解码）
-"set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}
+"set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %h:%m\")}
 "set statusline=[%F]%y%r%m%*%=[Line:%l/%L,Column:%c][%p%%]
 " 总是显示状态行
 set laststatus=2
@@ -250,7 +254,7 @@ set showmatch
 " 匹配括号高亮的时间（单位是十分之一秒）
 set matchtime=1
 " 光标移动到buffer的顶部和底部时保持3行距离
-set scrolloff=3
+set scrolloff=10
 " 为C程序提供自动缩进
 "set smartindent
 " 高亮显示普通txt文件（需要txt.vim脚本）
@@ -288,7 +292,7 @@ let Tlist_Show_One_File=1            "不同时显示多个文件的tag，只显
 let Tlist_Ctags_Cmd = '/usr/bin/ctags' 
 let Tlist_Exit_OnlyWindow = 1 "如果taglist窗口是最后一个窗口，则退出vim 
 "设置tags  
-"set tags=tags; 
+"set tags=tags;
 set tags=tags 
 "set autochdir 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -334,7 +338,7 @@ if has("cscope")
 		let cscope_file=findfile("cscope.out", ".;")
 		let cscope_pre=matchstr(cscope_file, ".*/")
 		if !empty(cscope_file) && filereadable(cscope_file)
-			silent exe "cs add" cscope_file cscope_pre
+"			silent exe "cs add" cscope_file cscope_pre
 		endif
 	endif
 endif 
@@ -344,5 +348,11 @@ function! CreatCtagsCscope()
 let s:lines = system("/usr/bin/ctags -R")
 "let s:lines = system("/usr/bin/ctags -R `pwd`")
 let s:lines = system("cscope -Rbq")
+cs add cscope.out
+endfunction
+
+function! KCreatCtagsCscope()
+let s:lines = system("/usr/bin/ctags -R")
+let s:lines = system("cscope -Rbqk")
 cs add cscope.out
 endfunction
